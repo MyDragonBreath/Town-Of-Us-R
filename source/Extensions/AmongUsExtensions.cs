@@ -100,7 +100,10 @@ namespace TownOfUs.Extensions
             playerControl.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
             playerControl.RawSetVisor(newOutfit.VisorId);
             playerControl.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
-            playerControl.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
+            if (playerControl.CurrentOutfit.SkinId != newOutfit.SkinId)
+            {
+                playerControl.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
+            }
 
         }
 
