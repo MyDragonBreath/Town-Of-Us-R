@@ -64,6 +64,7 @@ namespace TownOfUs
 
     public enum AbilityEnum
     {
-        Assassin
+        Assassin,
+        Eraser
     }
 }

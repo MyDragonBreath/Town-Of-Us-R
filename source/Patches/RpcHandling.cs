@@ -92,6 +92,7 @@ namespace TownOfUs
             SortRoles(CrewmateModifiers, crewmates.Count);
             SortRoles(GlobalModifiers, crewmates.Count + impostors.Count);
             SortRoles(ButtonModifiers, crewmates.Count + impostors.Count);
+            SortRoles(AssassinModifier, CustomGameOptions.NumberOfAssassins);
 
             var crewAndNeutralRoles = new List<(Type, CustomRPC, int)>();
             crewAndNeutralRoles.AddRange(CrewmateRoles);
@@ -171,8 +172,21 @@ namespace TownOfUs
 
             while (canHaveAbility.Count > 0 && assassins > 0)
             {
-                var (type, rpc, _) = AssassinModifier.Ability();
-                Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
+                if (assassins == CustomGameOptions.NumberOfAssassins && CustomGameOptions.DontReplaceFistAssassin)
+                {
+                    //first assassin
+                    Role.Gen<Ability>(typeof(Assassin), canHaveAbility.TakeFirst(), CustomRPC.SetAssassin);
+
+                } else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser)
+                {
+                    //second assassin
+                    Role.Gen<Ability>(typeof(Eraser), canHaveAbility.TakeFirst(), CustomRPC.SetEraser);
+                } else
+                {
+                    var (type, rpc, _) = AssassinModifier.Ability();
+                    Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
+                }
+                
                 assassins = assassins - 1;
             }
 
@@ -861,6 +875,9 @@ namespace TownOfUs
                     case CustomRPC.SetAssassin:
                         new Assassin(Utils.PlayerById(reader.ReadByte()));
                         break;
+                    case CustomRPC.SetEraser:
+                        new Eraser(Utils.PlayerById(reader.ReadByte()));
+                        break;
                     case CustomRPC.SetVigilante:
                         new Vigilante(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1121,7 +1138,8 @@ namespace TownOfUs
                     GlobalModifiers.Add((typeof(Sleuth), CustomRPC.SetSleuth, CustomGameOptions.SleuthOn));
                 #endregion
                 #region Assassin Modifier
-                AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100));
+                AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100 - CustomGameOptions.EraserChance));
+                AssassinModifier.Add((typeof(Eraser), CustomRPC.SetEraser, CustomGameOptions.EraserChance));
                 #endregion
                 GenEachRole(infected.ToList());
             }

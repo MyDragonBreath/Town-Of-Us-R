@@ -153,13 +153,37 @@ namespace TownOfUs.NeutralRoles.AmnesiacMod
                         player.nameText.color = Patches.Colors.Impostor;
                     }
                 }
-                if (CustomGameOptions.AmneTurnAssassin)
+
+                if (CustomGameOptions.AmneTurnAssassin && !CustomGameOptions.AmneTurnEraser)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                         (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
                     writer.Write(amnesiac.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+                if (!CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        (byte)CustomRPC.SetEraser, SendOption.Reliable, -1);
+                    writer.Write(amnesiac.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                if (CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser)
+                {
+                    
+                    var rpc = CustomRPC.SetAssassin;
+                    if (UnityEngine.Random.Range(0f, 100f) <= CustomGameOptions.EraserChance)
+                    {
+                        rpc = CustomRPC.SetEraser;
+                    }
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        (byte)rpc, SendOption.Reliable, -1);
+                    writer.Write(amnesiac.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+
+
                 if (amnesiac.Is(RoleEnum.Poisoner))
                 {
                     if (PlayerControl.LocalPlayer == amnesiac)

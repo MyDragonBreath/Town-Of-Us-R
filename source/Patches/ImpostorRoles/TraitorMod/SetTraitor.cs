@@ -111,15 +111,38 @@ namespace TownOfUs.ImpostorRoles.TraitorMod
                     player2.nameText.color = Patches.Colors.Impostor;
                 }
             }
-
-            if (CustomGameOptions.TraitorCanAssassin)
+            
+            
+            if (CustomGameOptions.TraitorCanAssassin && !CustomGameOptions.TraitorCanErase)
             {
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
                 writer2.Write(player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
-            
+
+            if (!CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase)
+            {
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.SetEraser, SendOption.Reliable, -1);
+                writer2.Write(player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+            }
+
+            if (CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase)
+            {
+                System.Random rnd = new System.Random();
+                var rpc = CustomRPC.SetAssassin;
+                if (UnityEngine.Random.Range(0f, 100f) <= CustomGameOptions.EraserChance)
+                {
+                    rpc = CustomRPC.SetEraser;
+                }
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)rpc, SendOption.Reliable, -1);
+                writer2.Write(player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+            }
+
             if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
             {
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(true);

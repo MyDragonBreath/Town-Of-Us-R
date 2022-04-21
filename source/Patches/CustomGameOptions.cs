@@ -147,7 +147,9 @@ namespace TownOfUs
 
         public static int EraserMod => (int)Generate.EraserMod.Get();
         public static bool EraserSeperate => Generate.EraserSeperateAbility.Get();
-        public static int NumberOfEraser => (int)Generate.NumberOfEraser.Get();
+        public static bool SecondAssassinAlwaysEraser => Generate.SecondAssassinAlwaysEraser.Get();
+        public static bool DontReplaceFistAssassin => Generate.DontReplaceFirstAssassin.Get();
+        public static int EraserChance => (int)Generate.EraserChance.Get();
         public static bool AmneTurnEraser => Generate.AmneTurnEraser.Get();
         public static bool TraitorCanErase => Generate.TraitorCanErase.Get();
         public static bool EraserMulti => Generate.EraserMultiErase.Get();

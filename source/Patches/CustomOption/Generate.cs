@@ -209,8 +209,11 @@ namespace TownOfUs.CustomOption
         public static CustomToggleOption AssassinGuessNeutralKilling;
 
         public static CustomHeaderOption Eraser;
+        public static CustomHeaderOption EraserSeperateHeader;
         public static CustomToggleOption EraserSeperateAbility;
-        public static CustomNumberOption NumberOfEraser;
+        public static CustomToggleOption SecondAssassinAlwaysEraser;
+        public static CustomToggleOption DontReplaceFirstAssassin;
+        public static CustomNumberOption EraserChance;
         public static CustomToggleOption AmneTurnEraser;
         public static CustomToggleOption TraitorCanErase;
         public static CustomNumberOption EraserMod;
@@ -461,7 +464,10 @@ namespace TownOfUs.CustomOption
 
             Eraser = new CustomHeaderOption(num++, "<color=#FF0000FF>Eraser Ability</color>");
             EraserSeperateAbility = new CustomToggleOption(num++, "Eraser seperate ability from Assasin", false);
-            NumberOfEraser = new CustomNumberOption(num++, "Number Of Erasers - requires above to be active", 1, 0, 3, 1); //Need a better way of indicating this
+            EraserSeperateHeader = new CustomHeaderOption(num++, "<color=#990000FF>If Eraser Is Seperate:</color>");
+            EraserChance = new CustomNumberOption(num++, "Chance of being Eraser instead of Assasin", 0f, 0f, 100f, 50f);
+            SecondAssassinAlwaysEraser = new CustomToggleOption(num++, "Second Assassin is always Eraser", true);
+            DontReplaceFirstAssassin = new CustomToggleOption(num++, "Don't replace first Assassin", true);
             AmneTurnEraser = new CustomToggleOption(num++, "Amnesiac Turned Impostor Gets Ability", false);
             TraitorCanErase = new CustomToggleOption(num++, "Traitor Gets Ability", false);
             EraserMod = new CustomNumberOption(num++, "Number Of Erases", 1, 1, 15, 1);
