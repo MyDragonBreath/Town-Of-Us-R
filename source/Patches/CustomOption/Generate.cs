@@ -460,7 +460,7 @@ namespace TownOfUs.CustomOption
             AssassinGuessNeutralKilling = new CustomToggleOption(num++, "Assassin Can Guess Neutral Killing Roles", false);
 
             Eraser = new CustomHeaderOption(num++, "<color=#FF0000FF>Eraser Ability</color>");
-            EraserSeperateAbility = new CustomToggleOption(num++, "Eraser seperate ability from Assasin");
+            EraserSeperateAbility = new CustomToggleOption(num++, "Eraser seperate ability from Assasin", false);
             NumberOfEraser = new CustomNumberOption(num++, "Number Of Erasers - requires above to be active", 1, 0, 3, 1); //Need a better way of indicating this
             AmneTurnEraser = new CustomToggleOption(num++, "Amnesiac Turned Impostor Gets Ability", false);
             TraitorCanErase = new CustomToggleOption(num++, "Traitor Gets Ability", false);

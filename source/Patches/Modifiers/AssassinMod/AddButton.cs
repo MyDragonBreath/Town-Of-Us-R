@@ -106,7 +106,7 @@ namespace TownOfUs.Modifiers.AssassinMod
                 var toggle = Object.Instantiate(confirmButton, voteArea.transform);
                 var togglerenderer = toggle.GetComponent<SpriteRenderer>();
                 togglerenderer.sprite = KillSprite;
-                toggle.transform.localPosition = new Vector3(-0.5f, 0, -2f);
+                toggle.transform.localPosition = new Vector3(-0.9f, 0, -2f);
                 toggle.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
                 toggle.layer = 5;
                 toggle.transform.parent = parent;
@@ -140,7 +140,7 @@ namespace TownOfUs.Modifiers.AssassinMod
                 if (role.EraseMode[voteArea.TargetPlayerId]) itself.GetComponent<SpriteRenderer>().sprite = EraseSprite;
                 else itself.GetComponent<SpriteRenderer>().sprite = KillSprite;
                 role.Guesses[voteArea.TargetPlayerId] = "None";
-                nametext.text = "None";
+                nametext.text = "Guess";
             }
             return Listener;
         }
@@ -218,9 +218,14 @@ namespace TownOfUs.Modifiers.AssassinMod
                 var EraseMode = role.EraseMode[voteArea.TargetPlayerId];
                 if (EraseMode)
                 {
-                    var Eraseable = playerModifier.Name == currentGuess;
+                    var Eraseable = false;
+                    if (playerModifier != null)
+                    {
+                        Eraseable = playerModifier.Name == currentGuess;
+                    }
                     role.RemainingKills--;
                     ShowHideButtons.HideSingle(role, targetId, false); // return to this
+
                     if (Eraseable)
                     {
                         AssassinKill.RpcErasePlayer(playerModifier.Player);

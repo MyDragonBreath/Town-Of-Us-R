@@ -79,10 +79,10 @@ namespace TownOfUs.Roles.Modifiers
 
             if (CustomGameOptions.FlashOn > 0) EraseColorMapping.Add("Flash", Colors.Flash);
             if (CustomGameOptions.BaitOn > 0) EraseColorMapping.Add("Bait", Colors.Bait);
-            if (CustomGameOptions.GiantOn > 0) EraseColorMapping.Add("Gaint", Colors.Giant);
+            if (CustomGameOptions.GiantOn > 0) EraseColorMapping.Add("Giant", Colors.Giant);
             if (CustomGameOptions.DiseasedOn > 0) EraseColorMapping.Add("Diseased", Colors.Diseased);
             if (CustomGameOptions.ButtonBarryOn > 0) EraseColorMapping.Add("Button Barry", Colors.ButtonBarry);
-            if (CustomGameOptions.LoversOn > 0) EraseColorMapping.Add("Lovers", Colors.Lovers);
+            if (CustomGameOptions.LoversOn > 0) EraseColorMapping.Add("Lover", Colors.Lovers);
             if (CustomGameOptions.SleuthOn > 0) EraseColorMapping.Add("Sleuth", Colors.Sleuth);
             if (CustomGameOptions.TiebreakerOn > 0) EraseColorMapping.Add("Tiebreaker", Colors.Tiebreaker);
             if (CustomGameOptions.TorchOn > 0) EraseColorMapping.Add("Torch", Colors.Torch);

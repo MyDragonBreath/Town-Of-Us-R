@@ -9,6 +9,7 @@ using TownOfUs.CrewmateRoles.SwapperMod;
 using TownOfUs.CrewmateRoles.VigilanteMod;
 using TownOfUs.ImpostorRoles.BlackmailerMod;
 using TownOfUs.Roles.Modifiers;
+using TownOfUs.Extensions;
 
 namespace TownOfUs.Modifiers.AssassinMod
 {
@@ -220,31 +221,9 @@ namespace TownOfUs.Modifiers.AssassinMod
             if (checkLover && player.IsLover() && CustomGameOptions.BothLoversDie)
                 ErasePlayer(Modifier.GetModifier<Lover>(player).OtherLover.Player, false);
 
-            var amOwner = player.AmOwner;
-            if (amOwner)
-            {
-                Modifier.ModifierDictionary.Remove(player.PlayerId);
-            }
+            Modifier.ModifierDictionary.Remove(player.PlayerId);
+            Role.GetRole(player).RegenTask();
             
-            
-
-            //ill come back to this
-            var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
-            foreach (var role in blackmailers)
-            {
-                if (role.Blackmailed != null && voteArea.TargetPlayerId == role.Blackmailed.PlayerId)
-                {
-                    if (BlackmailMeetingUpdate.PrevXMark != null && BlackmailMeetingUpdate.PrevOverlay != null)
-                    {
-                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
-                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new Vector3(
-                            voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
-                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset,
-                            voteArea.XMark.transform.localPosition.z);
-                    }
-                }
-            }
             
         }
     }

@@ -247,6 +247,7 @@ namespace TownOfUs.Roles
         public void RegenTask()
         {
             bool createTask;
+            var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
             try
             {
                 var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
@@ -268,6 +269,34 @@ namespace TownOfUs.Roles
 
             Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text =
                 $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+
+            bool ModifierTask;
+            try
+            {
+                var firstText = Player.myTasks.ToArray()[1].Cast<ImportantTextTask>();
+                ModifierTask = !firstText.Text.Contains("Modifier:");
+            }
+            catch (InvalidCastException)
+            {
+                ModifierTask = true;
+            }
+
+            if (!ModifierTask)
+            {
+                if (modifier != null)
+                {
+                    Player.myTasks.ToArray()[1].Cast<ImportantTextTask>().Text =
+                   $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText()}</color>";
+                } else
+                {
+                    Player.myTasks.RemoveAt(1);
+                }
+                
+                
+            }
+
+            
+
         }
 
         public static T Gen<T>(Type type, PlayerControl player, CustomRPC rpc)
