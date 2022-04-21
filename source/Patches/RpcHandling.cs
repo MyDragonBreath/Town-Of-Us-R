@@ -175,7 +175,6 @@ namespace TownOfUs
                 {
                     //first assassin
                     Role.Gen<Ability>(typeof(Assassin), canHaveAbility.TakeFirst(), CustomRPC.SetAssassin);
-
                 }
                 else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser && CustomGameOptions.EraserSeperate)
                 {

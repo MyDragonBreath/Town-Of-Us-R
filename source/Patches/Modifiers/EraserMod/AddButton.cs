@@ -181,7 +181,7 @@ namespace TownOfUs.Modifiers.EraserMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Ability.GetAbilities(AbilityEnum.Assassin))
+            foreach (var role in Ability.GetAbilities(AbilityEnum.Eraser))
             {
                 var eraser = (Eraser) role;
                 eraser.Guesses.Clear();
@@ -190,7 +190,7 @@ namespace TownOfUs.Modifiers.EraserMod
             }
 
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin)) return;
+            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Eraser)) return;
 
             var eraserRole = Ability.GetAbility<Eraser>(PlayerControl.LocalPlayer);
             if (eraserRole.RemainingErases <= 0) return;

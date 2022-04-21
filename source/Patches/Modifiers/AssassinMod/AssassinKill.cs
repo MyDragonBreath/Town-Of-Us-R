@@ -222,7 +222,9 @@ namespace TownOfUs.Modifiers.AssassinMod
                 ErasePlayer(Modifier.GetModifier<Lover>(player).OtherLover.Player, false);
 
             Modifier.ModifierDictionary.Remove(player.PlayerId);
-            Role.GetRole(player).RegenTask();
+            Role.GetRole(player).RegenModifier();
+            
+            
             
             
         }
