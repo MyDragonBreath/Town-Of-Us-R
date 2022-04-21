@@ -92,7 +92,6 @@ namespace TownOfUs
             SortRoles(CrewmateModifiers, crewmates.Count);
             SortRoles(GlobalModifiers, crewmates.Count + impostors.Count);
             SortRoles(ButtonModifiers, crewmates.Count + impostors.Count);
-            SortRoles(AssassinModifier, CustomGameOptions.NumberOfAssassins);
 
             var crewAndNeutralRoles = new List<(Type, CustomRPC, int)>();
             crewAndNeutralRoles.AddRange(CrewmateRoles);
@@ -177,11 +176,23 @@ namespace TownOfUs
                     //first assassin
                     Role.Gen<Ability>(typeof(Assassin), canHaveAbility.TakeFirst(), CustomRPC.SetAssassin);
 
-                } else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser && CustomGameOptions.EraserSeperate)
+                }
+                else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser && CustomGameOptions.EraserSeperate)
                 {
                     //second assassin
                     Role.Gen<Ability>(typeof(Eraser), canHaveAbility.TakeFirst(), CustomRPC.SetEraser);
-                } else
+                }
+                else if (CustomGameOptions.EraserSeperate)
+                {
+                    if (Random.Range(0f, 100f) <= CustomGameOptions.EraserChance)
+                    {
+                        Role.Gen<Ability>(typeof(Eraser), canHaveAbility.TakeFirst(), CustomRPC.SetEraser);
+                    } else
+                    {
+                        Role.Gen<Ability>(typeof(Assassin), canHaveAbility.TakeFirst(), CustomRPC.SetAssassin);
+                    }
+                }
+                else
                 {
                     var (type, rpc, _) = AssassinModifier.Ability();
                     Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
@@ -1138,14 +1149,8 @@ namespace TownOfUs
                     GlobalModifiers.Add((typeof(Sleuth), CustomRPC.SetSleuth, CustomGameOptions.SleuthOn));
                 #endregion
                 #region Assassin Modifier
-                if (!CustomGameOptions.EraserSeperate)
-                {
-                    AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100));
-                } else
-                {
-                    AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100 - CustomGameOptions.EraserChance));
-                    AssassinModifier.Add((typeof(Eraser), CustomRPC.SetEraser, CustomGameOptions.EraserChance));
-                }
+                AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100));
+                
                 
                 #endregion
                 GenEachRole(infected.ToList());
