@@ -161,14 +161,14 @@ namespace TownOfUs.NeutralRoles.AmnesiacMod
                     writer.Write(amnesiac.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                if (!CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser)
+                if (!CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser && CustomGameOptions.EraserSeperate)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                         (byte)CustomRPC.SetEraser, SendOption.Reliable, -1);
                     writer.Write(amnesiac.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                if (CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser)
+                if (CustomGameOptions.AmneTurnAssassin && CustomGameOptions.AmneTurnEraser && CustomGameOptions.EraserSeperate)
                 {
                     
                     var rpc = CustomRPC.SetAssassin;

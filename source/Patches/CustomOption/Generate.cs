@@ -465,7 +465,7 @@ namespace TownOfUs.CustomOption
             Eraser = new CustomHeaderOption(num++, "<color=#FF0000FF>Eraser Ability</color>");
             EraserSeperateAbility = new CustomToggleOption(num++, "Eraser seperate ability from Assasin", false);
             EraserSeperateHeader = new CustomHeaderOption(num++, "<color=#990000FF>If Eraser Is Seperate:</color>");
-            EraserChance = new CustomNumberOption(num++, "Chance of being Eraser instead of Assasin", 0f, 0f, 100f, 50f);
+            EraserChance = new CustomNumberOption(num++, "Chance of being Eraser instead of Assasin", 50f, 0f, 100f, 10f);
             SecondAssassinAlwaysEraser = new CustomToggleOption(num++, "Second Assassin is always Eraser", true);
             DontReplaceFirstAssassin = new CustomToggleOption(num++, "Don't replace first Assassin", true);
             AmneTurnEraser = new CustomToggleOption(num++, "Amnesiac Turned Impostor Gets Ability", false);

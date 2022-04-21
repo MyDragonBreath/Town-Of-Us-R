@@ -112,6 +112,7 @@ namespace TownOfUs.ImpostorRoles.TraitorMod
                 }
             }
             
+          
             
             if (CustomGameOptions.TraitorCanAssassin && !CustomGameOptions.TraitorCanErase)
             {
@@ -121,7 +122,7 @@ namespace TownOfUs.ImpostorRoles.TraitorMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
 
-            if (!CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase)
+            if (!CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase && CustomGameOptions.EraserSeperate)
             {
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte)CustomRPC.SetEraser, SendOption.Reliable, -1);
@@ -129,7 +130,7 @@ namespace TownOfUs.ImpostorRoles.TraitorMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
 
-            if (CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase)
+            if (CustomGameOptions.TraitorCanAssassin && CustomGameOptions.TraitorCanErase && CustomGameOptions.EraserSeperate)
             {
                 System.Random rnd = new System.Random();
                 var rpc = CustomRPC.SetAssassin;

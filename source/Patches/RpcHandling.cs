@@ -172,12 +172,12 @@ namespace TownOfUs
 
             while (canHaveAbility.Count > 0 && assassins > 0)
             {
-                if (assassins == CustomGameOptions.NumberOfAssassins && CustomGameOptions.DontReplaceFistAssassin)
+                if (assassins == CustomGameOptions.NumberOfAssassins && CustomGameOptions.DontReplaceFistAssassin && CustomGameOptions.EraserSeperate)
                 {
                     //first assassin
                     Role.Gen<Ability>(typeof(Assassin), canHaveAbility.TakeFirst(), CustomRPC.SetAssassin);
 
-                } else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser)
+                } else if (assassins == CustomGameOptions.NumberOfAssassins - 1 && CustomGameOptions.SecondAssassinAlwaysEraser && CustomGameOptions.EraserSeperate)
                 {
                     //second assassin
                     Role.Gen<Ability>(typeof(Eraser), canHaveAbility.TakeFirst(), CustomRPC.SetEraser);
@@ -1138,8 +1138,15 @@ namespace TownOfUs
                     GlobalModifiers.Add((typeof(Sleuth), CustomRPC.SetSleuth, CustomGameOptions.SleuthOn));
                 #endregion
                 #region Assassin Modifier
-                AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100 - CustomGameOptions.EraserChance));
-                AssassinModifier.Add((typeof(Eraser), CustomRPC.SetEraser, CustomGameOptions.EraserChance));
+                if (!CustomGameOptions.EraserSeperate)
+                {
+                    AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100));
+                } else
+                {
+                    AssassinModifier.Add((typeof(Assassin), CustomRPC.SetAssassin, 100 - CustomGameOptions.EraserChance));
+                    AssassinModifier.Add((typeof(Eraser), CustomRPC.SetEraser, CustomGameOptions.EraserChance));
+                }
+                
                 #endregion
                 GenEachRole(infected.ToList());
             }
