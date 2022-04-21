@@ -144,6 +144,14 @@ namespace TownOfUs
         public static bool TraitorCanAssassin => Generate.TraitorCanAssassin.Get();
         public static bool AssassinMultiKill => Generate.AssassinMultiKill.Get();
         public static bool AssassinSnitchViaCrewmate => Generate.AssassinSnitchViaCrewmate.Get();
+
+        public static int EraserMod => (int)Generate.EraserMod.Get();
+        public static bool EraserSeperate => Generate.EraserSeperateAbility.Get();
+        public static int NumberOfEraser => (int)Generate.NumberOfEraser.Get();
+        public static bool AmneTurnEraser => Generate.AmneTurnEraser.Get();
+        public static bool TraitorCanErase => Generate.TraitorCanErase.Get();
+        public static bool EraserMulti => Generate.EraserMultiErase.Get();
+
         public static float UnderdogKillBonus => Generate.UnderdogKillBonus.Get();
         public static bool UnderdogIncreasedKC => Generate.UnderdogIncreasedKC.Get();
         public static int PhantomTasksRemaining => (int)Generate.PhantomTasksRemaining.Get();

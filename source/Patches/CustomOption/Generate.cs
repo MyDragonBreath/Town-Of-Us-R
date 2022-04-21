@@ -208,6 +208,14 @@ namespace TownOfUs.CustomOption
         public static CustomToggleOption AssassinGuessNeutralEvil;
         public static CustomToggleOption AssassinGuessNeutralKilling;
 
+        public static CustomHeaderOption Eraser;
+        public static CustomToggleOption EraserSeperateAbility;
+        public static CustomNumberOption NumberOfEraser;
+        public static CustomToggleOption AmneTurnEraser;
+        public static CustomToggleOption TraitorCanErase;
+        public static CustomNumberOption EraserMod;
+        public static CustomToggleOption EraserMultiErase;
+
         public static CustomHeaderOption Underdog;
         public static CustomNumberOption UnderdogKillBonus;
         public static CustomToggleOption UnderdogIncreasedKC;
@@ -450,6 +458,15 @@ namespace TownOfUs.CustomOption
             AssassinGuessNeutralBenign = new CustomToggleOption(num++, "Assassin Can Guess Neutral Benign Roles", false);
             AssassinGuessNeutralEvil = new CustomToggleOption(num++, "Assassin Can Guess Neutral Evil Roles", false);
             AssassinGuessNeutralKilling = new CustomToggleOption(num++, "Assassin Can Guess Neutral Killing Roles", false);
+
+            Eraser = new CustomHeaderOption(num++, "<color=#FF0000FF>Eraser Ability</color>");
+            EraserSeperateAbility = new CustomToggleOption(num++, "Eraser seperate ability from Assasin");
+            NumberOfEraser = new CustomNumberOption(num++, "Number Of Erasers - requires above to be active", 1, 0, 3, 1); //Need a better way of indicating this
+            AmneTurnEraser = new CustomToggleOption(num++, "Amnesiac Turned Impostor Gets Ability", false);
+            TraitorCanErase = new CustomToggleOption(num++, "Traitor Gets Ability", false);
+            EraserMod = new CustomNumberOption(num++, "Number Of Erases", 1, 1, 15, 1);
+            EraserMultiErase = new CustomToggleOption(num++, "Eraser Can Erase More Than Once Per Meeting", false);
+            
 
             Haunter =
                 new CustomHeaderOption(num++, "<color=#d3d3d3FF>Haunter</color>");

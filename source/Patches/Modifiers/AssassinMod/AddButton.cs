@@ -19,6 +19,9 @@ namespace TownOfUs.Modifiers.AssassinMod
 
         private static Sprite GuessSprite => TownOfUs.GuessSprite;
 
+        private static Sprite EraseSprite => TownOfUs.EraseToggleSprite;
+        private static Sprite KillSprite => TownOfUs.AssassinToggleSprite;
+
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
             if (voteArea.AmDead) return true;
@@ -39,7 +42,7 @@ namespace TownOfUs.Modifiers.AssassinMod
             var targetId = voteArea.TargetPlayerId;
             if (IsExempt(voteArea))
             {
-                role.Buttons[targetId] = (null, null, null, null);
+                role.Buttons[targetId] = (null, null, null, null, null);
                 return;
             }
 
@@ -98,9 +101,50 @@ namespace TownOfUs.Modifiers.AssassinMod
             guessCollider.offset = Vector2.zero;
             guess.transform.GetChild(0).gameObject.Destroy();
 
-            role.Guesses.Add(targetId, "None");
-            role.Buttons[targetId] = (cycleBack, cycleForward, guess, nameText);
+            if (!CustomGameOptions.EraserSeperate)
+            {
+                var toggle = Object.Instantiate(confirmButton, voteArea.transform);
+                var togglerenderer = toggle.GetComponent<SpriteRenderer>();
+                togglerenderer.sprite = KillSprite;
+                toggle.transform.localPosition = new Vector3(-0.5f, 0, -2f);
+                toggle.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+                toggle.layer = 5;
+                toggle.transform.parent = parent;
+                var toggleEvent = new Button.ButtonClickedEvent();
+                toggleEvent.AddListener(ToggleErase(role, voteArea, nameText, toggle));
+                toggle.GetComponent<PassiveButton>().OnClick = toggleEvent;
+                var toggleCollider = toggle.GetComponent<BoxCollider2D>();
+                toggleCollider.size = togglerenderer.sprite.bounds.size;
+                toggleCollider.offset = Vector2.zero;
+                toggle.transform.GetChild(0).gameObject.Destroy();
+                role.Guesses.Add(targetId, "None");
+                role.EraseMode.Add(targetId, false);
+                role.Buttons[targetId] = (cycleBack, cycleForward, guess, toggle, nameText);
+            } else
+            {
+                role.Guesses.Add(targetId, "None");
+                role.EraseMode.Add(targetId, false);
+                role.Buttons[targetId] = (cycleBack, cycleForward, guess, null, nameText);
+            }
+            
+
+            
         }
+
+        private static Action ToggleErase(Assassin role, PlayerVoteArea voteArea, TextMeshPro nametext, GameObject itself)
+        {
+            void Listener()
+            {
+                if (MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion) return;
+                role.EraseMode[voteArea.TargetPlayerId] = !role.EraseMode[voteArea.TargetPlayerId];
+                if (role.EraseMode[voteArea.TargetPlayerId]) itself.GetComponent<SpriteRenderer>().sprite = EraseSprite;
+                else itself.GetComponent<SpriteRenderer>().sprite = KillSprite;
+                role.Guesses[voteArea.TargetPlayerId] = "None";
+                nametext.text = "None";
+            }
+            return Listener;
+        }
+
 
         private static Action Cycle(Assassin role, PlayerVoteArea voteArea, TextMeshPro nameText, bool forwardsCycle = true)
         {
@@ -108,25 +152,49 @@ namespace TownOfUs.Modifiers.AssassinMod
             {
                 if (MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion) return;
                 var currentGuess = role.Guesses[voteArea.TargetPlayerId];
-                var guessIndex = currentGuess == "None"
+                var EraseMode = role.EraseMode[voteArea.TargetPlayerId];
+                if (EraseMode && !CustomGameOptions.EraserSeperate)
+                {
+                    var guessIndex = currentGuess == "None"
+                    ? -1
+                    : role.PossibleModGuesses.IndexOf(currentGuess);
+                    if (forwardsCycle)
+                    {
+                        if (++guessIndex >= role.PossibleModGuesses.Count)
+                            guessIndex = 0;
+                    }
+                    else
+                    {
+                        if (--guessIndex < 0)
+                            guessIndex = role.PossibleModGuesses.Count - 1;
+                    }
+                    var newGuess = role.Guesses[voteArea.TargetPlayerId] = role.PossibleModGuesses[guessIndex];
+
+                    nameText.text = newGuess == "None"
+                        ? "Guess"
+                        : $"<color=#{role.EraseSortedColorMapping[newGuess].ToHtmlStringRGBA()}>{newGuess}</color>";
+                } else
+                {
+                    var guessIndex = currentGuess == "None"
                     ? -1
                     : role.PossibleGuesses.IndexOf(currentGuess);
-                if (forwardsCycle)
-                {
-                    if (++guessIndex >= role.PossibleGuesses.Count)
-                        guessIndex = 0;
-                }
-                else
-                {
-                    if (--guessIndex < 0)
-                        guessIndex = role.PossibleGuesses.Count - 1;
-                }
+                    if (forwardsCycle)
+                    {
+                        if (++guessIndex >= role.PossibleGuesses.Count)
+                            guessIndex = 0;
+                    }
+                    else
+                    {
+                        if (--guessIndex < 0)
+                            guessIndex = role.PossibleGuesses.Count - 1;
+                    }
+                    var newGuess = role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
 
-                var newGuess = role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
-
-                nameText.text = newGuess == "None"
-                    ? "Guess"
-                    : $"<color=#{role.SortedColorMapping[newGuess].ToHtmlStringRGBA()}>{newGuess}</color>";
+                    nameText.text = newGuess == "None"
+                        ? "Guess"
+                        : $"<color=#{role.SortedColorMapping[newGuess].ToHtmlStringRGBA()}>{newGuess}</color>";
+                }
+                
             }
 
             return Listener;
@@ -147,17 +215,35 @@ namespace TownOfUs.Modifiers.AssassinMod
                 var playerRole = Role.GetRole(voteArea);
                 var playerModifier = Modifier.GetModifier(voteArea);
 
-                var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
-                if (CustomGameOptions.AssassinSnitchViaCrewmate)
-                    toDie = (playerRole.Name == currentGuess || (playerRole.Name == "Snitch" && currentGuess == "Crewmate")) ? playerRole.Player : role.Player;
-
-                AssassinKill.RpcMurderPlayer(toDie);
-                role.RemainingKills--;
-                ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
-                if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                var EraseMode = role.EraseMode[voteArea.TargetPlayerId];
+                if (EraseMode)
                 {
-                    var lover = ((Lover)playerModifier).OtherLover.Player;
-                    ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                    var Eraseable = playerModifier.Name == currentGuess;
+                    role.RemainingKills--;
+                    ShowHideButtons.HideSingle(role, targetId, false); // return to this
+                    if (Eraseable)
+                    {
+                        AssassinKill.RpcErasePlayer(playerModifier.Player);
+                        if (playerModifier.Player.IsLover())
+                        {
+                            var lover = ((Lover)playerModifier).OtherLover.Player;
+                            ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                        }
+                    }
+                } else
+                {
+                    var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
+                    if (CustomGameOptions.AssassinSnitchViaCrewmate)
+                        toDie = (playerRole.Name == currentGuess || (playerRole.Name == "Snitch" && currentGuess == "Crewmate")) ? playerRole.Player : role.Player;
+
+                    AssassinKill.RpcMurderPlayer(toDie);
+                    role.RemainingKills--;
+                    ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
+                    if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                    {
+                        var lover = ((Lover)playerModifier).OtherLover.Player;
+                        ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                    }
                 }
             }
 
@@ -170,6 +256,7 @@ namespace TownOfUs.Modifiers.AssassinMod
             {
                 var assassin = (Assassin) role;
                 assassin.Guesses.Clear();
+                assassin.EraseMode.Clear();
                 assassin.Buttons.Clear();
                 assassin.GuessedThisMeeting = false;
             }

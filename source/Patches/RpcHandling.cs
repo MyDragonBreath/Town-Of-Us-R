@@ -537,6 +537,10 @@ namespace TownOfUs
                         var toDie = Utils.PlayerById(reader.ReadByte());
                         AssassinKill.MurderPlayer(toDie);
                         break;
+                    case CustomRPC.Erase:
+                        var toErase = Utils.PlayerById(reader.ReadByte());
+                        AssassinKill.ErasePlayer(toErase);
+                        break;
                     case CustomRPC.VigilanteKill:
                         var toDie2 = Utils.PlayerById(reader.ReadByte());
                         VigilanteKill.MurderPlayer(toDie2);

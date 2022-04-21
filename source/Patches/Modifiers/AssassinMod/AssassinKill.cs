@@ -182,5 +182,70 @@ namespace TownOfUs.Modifiers.AssassinMod
                 meetingHud.CheckForEndVoting();
             }
         }
+
+
+
+
+        public static void RpcErasePlayer(PlayerControl player)
+        {
+            PlayerVoteArea voteArea = MeetingHud.Instance.playerStates.First(
+                x => x.TargetPlayerId == player.PlayerId
+            );
+            RpcErasePlayer(voteArea, player);
+        }
+        public static void RpcErasePlayer(PlayerVoteArea voteArea, PlayerControl player)
+        {
+            ErasePlayer(voteArea, player);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.Erase, SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public static void ErasePlayer(PlayerControl player, bool checkLover = true)
+        {
+            PlayerVoteArea voteArea = MeetingHud.Instance.playerStates.First(
+                x => x.TargetPlayerId == player.PlayerId
+            );
+            ErasePlayer(voteArea, player, checkLover);
+        }
+        public static void ErasePlayer(
+            PlayerVoteArea voteArea,
+            PlayerControl player,
+            bool checkLover = true
+        )
+        {
+            var hudManager = DestroyableSingleton<HudManager>.Instance;
+
+            if (checkLover && player.IsLover() && CustomGameOptions.BothLoversDie)
+                ErasePlayer(Modifier.GetModifier<Lover>(player).OtherLover.Player, false);
+
+            var amOwner = player.AmOwner;
+            if (amOwner)
+            {
+                Modifier.ModifierDictionary.Remove(player.PlayerId);
+            }
+            
+            
+
+            //ill come back to this
+            var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
+            foreach (var role in blackmailers)
+            {
+                if (role.Blackmailed != null && voteArea.TargetPlayerId == role.Blackmailed.PlayerId)
+                {
+                    if (BlackmailMeetingUpdate.PrevXMark != null && BlackmailMeetingUpdate.PrevOverlay != null)
+                    {
+                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
+                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
+                        voteArea.XMark.transform.localPosition = new Vector3(
+                            voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset,
+                            voteArea.XMark.transform.localPosition.z);
+                    }
+                }
+            }
+            
+        }
     }
 }

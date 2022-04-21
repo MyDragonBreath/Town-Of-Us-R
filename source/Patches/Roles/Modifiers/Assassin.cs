@@ -11,14 +11,20 @@ namespace TownOfUs.Roles.Modifiers
 {
     public class Assassin : Ability
     {
-        public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> Buttons = new Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)>();
+        public Dictionary<byte, (GameObject, GameObject, GameObject, GameObject, TMP_Text)> Buttons = new Dictionary<byte, (GameObject, GameObject, GameObject, GameObject, TMP_Text)>();
 
 
         private Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>();
 
         public Dictionary<string, Color> SortedColorMapping;
 
+        private Dictionary<string, Color> EraseColorMapping = new Dictionary<string, Color>();
+
+        public Dictionary<string, Color> EraseSortedColorMapping;
+
         public Dictionary<byte, string> Guesses = new Dictionary<byte, string>();
+
+        public Dictionary<byte, bool> EraseMode = new Dictionary<byte, bool>();
 
 
         public Assassin(PlayerControl player) : base(player)
@@ -71,8 +77,21 @@ namespace TownOfUs.Roles.Modifiers
             // Add vanilla crewmate if enabled
             if (CustomGameOptions.AssassinCrewmateGuess) ColorMapping.Add("Crewmate", Colors.Crewmate);
 
+            if (CustomGameOptions.FlashOn > 0) EraseColorMapping.Add("Flash", Colors.Flash);
+            if (CustomGameOptions.BaitOn > 0) EraseColorMapping.Add("Bait", Colors.Bait);
+            if (CustomGameOptions.GiantOn > 0) EraseColorMapping.Add("Gaint", Colors.Giant);
+            if (CustomGameOptions.DiseasedOn > 0) EraseColorMapping.Add("Diseased", Colors.Diseased);
+            if (CustomGameOptions.ButtonBarryOn > 0) EraseColorMapping.Add("Button Barry", Colors.ButtonBarry);
+            if (CustomGameOptions.LoversOn > 0) EraseColorMapping.Add("Lovers", Colors.Lovers);
+            if (CustomGameOptions.SleuthOn > 0) EraseColorMapping.Add("Sleuth", Colors.Sleuth);
+            if (CustomGameOptions.TiebreakerOn > 0) EraseColorMapping.Add("Tiebreaker", Colors.Tiebreaker);
+            if (CustomGameOptions.TorchOn > 0) EraseColorMapping.Add("Torch", Colors.Torch);
+            if (CustomGameOptions.DrunkOn > 0) EraseColorMapping.Add("Drunk", Colors.Drunk);
+
             // Sorts the list alphabetically. 
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+
+            EraseSortedColorMapping = EraseColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
 
         public bool GuessedThisMeeting { get; set; } = false;
@@ -80,5 +99,6 @@ namespace TownOfUs.Roles.Modifiers
         public int RemainingKills { get; set; }
 
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
+        public List<string> PossibleModGuesses => EraseSortedColorMapping.Keys.ToList();
     }
 }

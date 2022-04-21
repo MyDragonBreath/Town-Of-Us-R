@@ -133,6 +133,7 @@ namespace TownOfUs
         
         AddMayorVoteBank,
         RemoveAllBodies,
-        CheckMurder
+        CheckMurder,
+        Erase
     }
 }
